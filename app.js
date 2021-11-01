@@ -1,11 +1,37 @@
-const contact = require("./contacts");
+const { argv } = require("process");
+const { command, describe } = require("yargs");
+const { saveContact } = require("./contacts");
+const yargs = require("yargs");
 
-const main = async () => {
-    const name = await contact.createQuestion("Isi Nama: ");
-    const phoneNumber = await contact.createQuestion("Isi No. HP: ");
-    const email = await contact.createQuestion("Isi Email: ");
+yargs.command({
+    command: "add",
+    describe: "Add new contact",
+    builder: {
+        name: {
+            describe: "Full Name",
+            demandOption: true,
+            type: "string",
+        },
+        phoneNumber: {
+            describe: "Phone Number",
+            demandOption: true,
+            type: "string",
+        },
+        email: {
+            describe: "Email",
+            demandOption: true,
+            type: "string",
+        }
+    },
+    handler(argv) {
+        const contact = {
+            name: argv.name,
+            phoneNumber: argv.phoneNumber,
+            email: argv.email,
+        };
 
-    contact.saveContact(name, phoneNumber, email);
-}
+        saveContact(contact.name, contact.phoneNumber, contact.email);
+    }
+});
 
-main();
+yargs.parse();
